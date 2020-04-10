@@ -1,10 +1,10 @@
-import SalaryRouter from './salary/salaryRouter'
-import LeaderRouter from './Leader/leaderRouter'
+import OrganizationCompany from './organization/company'
+import OrganizationDepartment from './organization/department'
 
 
 const AppRoutes = (app) => {
-    app.use(SalaryRouter.routePrefix, SalaryRouter.route()),
-    app.use(LeaderRouter.routePrefix, LeaderRouter.route())
+    app.use(OrganizationCompany.routePrefix, OrganizationCompany.route()),
+    app.use(OrganizationDepartment.routePrefix, OrganizationDepartment.route())
 }
 
 export default AppRoutes;
