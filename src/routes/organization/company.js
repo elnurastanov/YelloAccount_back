@@ -6,44 +6,20 @@ const route = () => {
 
     const router = new express.Router();
 
-    router.route('/organization/company/:id')
+    router.route('/organization/company')
         .get((req, res) => {
-            if (req.params.id === '11') {
-                DBconnect.query(
-                    `SELECT name, direction FROM company`,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.send(result)
-                        }
+
+            DBconnect.query(
+                `SELECT id, name, direction FROM company`,
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        res.send(result)
                     }
-                )
-            } else {
-                res.send('sehf ID')
-            }
-        })
-        .post((req, res) => {
-            if (req.params.id === '12') {
-                DBconnect.query(
-                    `INSERT INTO company
-                        (name, direction)
-                        VALUES
-                        (
-                            "${req.body.companyName}", 
-                            "${req.body.companyDirection}"
-                        )`,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.send('OK')
-                        }
-                    }
-                )
-            } else {
-                res.send('sehf ID')
-            }
+                }
+            )
+
         })
 
     return router;

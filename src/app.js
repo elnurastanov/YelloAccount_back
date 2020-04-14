@@ -1,6 +1,6 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import cors from 'cors'
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import AppRoutes from './routes/index';
 
 const port = 2000;
