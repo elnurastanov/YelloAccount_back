@@ -11,11 +11,12 @@ const route = () => {
 
             DBconnect.query(
                 `SELECT id, name, direction FROM company`,
-                (err, result) => {
-                    if (err) {
-                        console.log(err);
+                (error, result) => {
+                    if (error) {
+                        console.log('getCompany Error => ', error);
+                        res.status(404).send()
                     } else {
-                        res.send(result)
+                        res.status(200).send(result)
                     }
                 }
             )

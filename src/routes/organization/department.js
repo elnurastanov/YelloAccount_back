@@ -6,57 +6,25 @@ const route = () => {
 
     const router = new express.Router();
 
-    router.route('/organization/department/:id')
-        .get((req, res) => {
-            if (req.params.id === '21') {
-                DBconnect.query(
-                    `SELECT company.name as company_name, department.name as department_name
-                     FROM company 
-                     INNER JOIN department
-                     ON department.company_id = company.id`,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.send(result);
-                            console.log(result)
-                        }
-                    }
-                )
-            } else if(req.params.id === '20'){
-                DBconnect.query(
-                    `SELECT id, name
-                     FROM company`,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.send(result)
-                        }
-                    }
-                )
-            } else {
-                res.send('sehf ID');
-            }
-        })
-        .post((req, res) => {
-            if (req.params.id === '22') {
-                DBconnect.query(
-                    `INSERT INTO department 
-                    (company_id, name) 
-                    VALUES 
-                    (${req.body.companyID}, "${req.body.departmentName}")`,
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.send('OK');
-                            console.log(result)
-                        }
-                    }
-                )
-            }
-        })
+   router.get('/organization/department', (req, res) => {
+       DBconnect.query(
+           `SELECT 
+           department.id,
+           company.name AS company_name, 
+           department.name AS department_name 
+           FROM department
+           INNER JOIN company 
+           WHERE department.company_id=company.id`,
+           (error, result) => {
+               if(error){
+                   console.log('getDepartment Error => ', error);
+                   res.status(404).send()
+               }else{
+                   res.status(200).send(result)
+               }
+           }
+       )
+   })
 
     return router;
 }
