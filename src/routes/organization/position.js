@@ -5,42 +5,29 @@ import DBconnect from '../../database/dbconnection'
 const route = () => {
     const router = new express.Router();
 
-    router.route('/organization/position/:id')
-        .get((req, res) => {
-            if (req.params.id === '30') {
-                DBconnect.query(
-                    `SELECT id, name 
-                    FROM company`,
-                    (error, result) => {
-                        if(error){
-                            console.log(error);
-                        }else{
-                            res.send(result);
-                        }
-                    }
-                        
-                )
+    router.get('/organization/position', (req, res) => {
+        DBconnect.query(
+            `
+            SELECT 
+            CONCAT(company.name,' ','>',' ',department.name) AS fullMeta, 
+            department.name AS department_name, 
+            positions.id AS id, 
+            positions.name AS position_name
+            FROM positions
+            INNER JOIN department
+            INNER JOIN company
+            WHERE positions.department_id=department.id AND department.company_id=company.id
+            `, (error, result) => {
+            if (error) {
+                console.log('getPosition Error => ', error);
+                res.status(404).send()
+            } else {
+                res.status(200).send(result)
             }
-        })
-        .post((req, res) => {
-            if(req.params.id === '31'){
-                DBconnect.query(
-                    `SELECT department.id as id, department.name as name
-                    FROM department
-                    INNER JOIN company
-                    ON department.company_id = company.id
-                    WHERE department.company_id = ${req.body.companyID}`,
-                    (error, result) => {
-                        if(error){
-                            console.log(error)
-                        }else{
-                            res.send(result);
-                        }
-                    }
-                )
-                
-            }
-        })
+
+        }
+        )
+    })
 
     return router;
 }
