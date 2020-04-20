@@ -8,6 +8,7 @@ import OrganizationPositionModal from './organization/modalRoute/positionModal'
 import OrganizationPositionByDepartmentId from './organization/positionByDepartment'
 import OrganizationCount from './organization/organizationCount'
 import Staff from './staff/staff'
+import StaffById from './staff/modalRoute/modifyStaff'
 
 
 
@@ -21,7 +22,8 @@ const AppRoutes = (app) => {
     app.use(OrganizationPositionModal.routePrefix, OrganizationPositionModal.route()),
     app.use(OrganizationPositionByDepartmentId.routePrefix, OrganizationPositionByDepartmentId.route()),
     app.use(OrganizationCount.routePrefix, OrganizationCount.route()),
-    app.use(Staff.routePrefix, Staff.route())
+    app.use(Staff.routePrefix, Staff.route()),
+    app.use(StaffById.routePrefix, StaffById.route())
 }
 
 export default AppRoutes;
