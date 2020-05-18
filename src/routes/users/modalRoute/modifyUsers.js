@@ -40,7 +40,7 @@ const route = () => {
         )
     })
 
-    Router.put('/users', (req, res) => {
+    Router.put('/users', async (req, res) => {
 
         let roles = []
         for (let i = 0; i < req.body.role.length; i++) {
@@ -51,52 +51,57 @@ const route = () => {
             if (req.body.role[i] === "Customer Services") roles.push(5)
             if (req.body.role[i] === "Employee") roles.push(6)
         }
-
-        DBconnect.query(
-            `
-                UPDATE users_roles
-                JOIN (
-                    SELECT 1 as id, false as new_score2
-                    UNION ALL
-                    SELECT 2, false
-                    UNION ALL
-                    SELECT 3, false
-                    UNION ALL
-                    SELECT 4, false
-                    UNION ALL
-                    SELECT 5, false
-                    UNION ALL
-                    SELECT 6, true
-                ) vals ON user = ${req.body.id} AND role=vals.id
-                SET role_status = new_score2;
-            `, (error, result) => {
-
-            if (error) res.status(500).send();
-            if (result) {
-
-                let query = roles.map(val => {
-
-                    return `UPDATE users_roles SET role_status = true WHERE user = ${req.body.id} AND role=${val}`
-
-                })
-
-                let loopResult = []
-                for (let j = 0; j < query.length; j++) {
-                    
-                    
-                    DBconnect.query(query[j], (err, outcome) => {
-                        if (err) return 500;
-                        if (outcome) return 200;
+        try {
+            let result = await DBconnect.query(
+                `
+                    UPDATE users_roles
+                    JOIN (
+                        SELECT 1 as id, false as new_score2
+                        UNION ALL
+                        SELECT 2, false
+                        UNION ALL
+                        SELECT 3, false
+                        UNION ALL
+                        SELECT 4, false
+                        UNION ALL
+                        SELECT 5, false
+                        UNION ALL
+                        SELECT 6, true
+                    ) vals ON user = ${req.body.id} AND role=vals.id
+                    SET role_status = new_score2;
+                `);
+    
+                    let query = roles.map(val => {
+    
+                        return `UPDATE users_roles SET role_status = true WHERE user = ${req.body.id} AND role=${val}`
+    
                     })
-
-                }
-
-                console.log(loopResult)
-                res.status(200).json({message: messages.modifyUserRoleSuccess});
-
-            }
+    
+                    let loopResult = []
+                    try{
+                        for (let j = 0; j < query.length; j++) {
+                        
+                        
+                            await DBconnect.query(query[j]);
+                            loopResult.push(200)
+        
+                        }
+                    }catch(error){
+                        res.status(500).send();
+                    }
+                    
+    
+                    console.log(loopResult)
+                    res.status(200).json({message: messages.modifyUserRoleSuccess});
+    
+                
+            
+            
+        } catch(error){
+            res.status(500).send();
         }
-        )
+
+       
 
     })
 
