@@ -19,16 +19,17 @@ const route = () => {
                 users.id AS id,
                 users.username AS username,
                 users.pswd AS password,
-                roles.name AS role,
+                GROUP_CONCAT( roles.name SEPARATOR ',') AS role,
                 CONCAT(staff.first_name, " ", staff.last_name) AS staff
                 FROM users
                 INNER JOIN users_roles
                 INNER JOIN roles
                 INNER JOIN staff
-                WHERE username="${credential.username}"
+                ON username="${credential.username}"
                 AND users_roles.user=users.id
                 AND users_roles.role=roles.id
                 AND users.staff_id=staff.id
+                AND users_roles.role_status=true
             `, (error, result) => {
 
             if (error) res.status(500).send()
@@ -41,10 +42,8 @@ const route = () => {
                     username: result[0].username,
                     password: result[0].password,
                     staff: result[0].staff,
-                    role: []
+                    role: result[0].role
                 }
-                
-                user.role = result.map((value, index) => user.role[index] = value.role)
 
                 bcrypt.compare(credential.password, user.password, (err, check) => {
 

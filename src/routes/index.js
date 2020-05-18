@@ -1,6 +1,7 @@
 import Register from './register/addUser'
 import Login from './login/login'
 import Users from './users/users'
+import UsersModal from './users/modalRoute/modifyUsers'
 import OrganizationCompany from './organization/company'
 import OrganizationCompanyModal from './organization/modalRoute/companyModal'
 import OrganizationDepartment from './organization/department'
@@ -15,11 +16,11 @@ import StaffById from './staff/modalRoute/modifyStaff'
 import staffWithFIN from './staff/staffWithFIN'
 
 
-
 const AppRoutes = (app) => {
     app.use(Register.routePrefix, Register.route()),
     app.use(Login.routePrefix, Login.route()),
     app.use(Users.routePrefix, Users.route()),
+    app.use(UsersModal.routePrefix, UsersModal.route()),
     app.use(OrganizationCompany.routePrefix, OrganizationCompany.route()),
     app.use(OrganizationCompanyModal.routePrefix, OrganizationCompanyModal.route()),
     app.use(OrganizationDepartment.routePrefix, OrganizationDepartment.route()),

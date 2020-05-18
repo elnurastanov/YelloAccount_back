@@ -17,12 +17,13 @@ const route = () => {
                 DBconnect.query(
                     `
                     INSERT INTO users
-                    (staff_id, username, pswd)
+                    (staff_id, username, pswd, user_status)
                     VALUES
                     (
                         ${req.body.staff_id},
                         "${req.body.username}",
-                        "${hash}"
+                        "${hash}",
+                        true
                     )
                     `, (error, result) => {
                     if (error) {
@@ -33,9 +34,14 @@ const route = () => {
                     } else DBconnect.query(
                         `
                             INSERT INTO users_roles
-                            (user)
+                            (user, role, role_status)
                             VALUES
-                            (${result.insertId})
+                            (${result.insertId}, 1, false),
+                            (${result.insertId}, 2, false),
+                            (${result.insertId}, 3, false),
+                            (${result.insertId}, 4, false),
+                            (${result.insertId}, 5, false),
+                            (${result.insertId}, 6, true)
                         `, (err, success) => {
                         if (err) {
 
