@@ -7,10 +7,11 @@ const route = () => {
 
     const Router = new express.Router()
 
-    Router.get('/users', (req, res) => {
+    Router
+        .get('/users', (req, res) => {
 
-        DBconnect.query(
-            `
+            DBconnect.query(
+                `
                 SELECT
                 users.id AS id,
                 users.username AS username,
@@ -35,40 +36,58 @@ const route = () => {
                 GROUP BY users.id
             `, (error, result) => {
 
-            if (error) res.status(500).send()
-            if (result) {
+                if (error) res.status(500).send()
+                if (result) {
 
-                for (let i = 0; i < result.length; i++) {
+                    for (let i = 0; i < result.length; i++) {
 
-                    result[i].role = result[i].role.split(',');
-                    result[i].key = i;
-                    if(result[i].status === 1) result[i].status = "Aktiv";
-                    if(result[i].status === 0) result[i].status = "Deaktiv"
+                        result[i].role = result[i].role.split(',');
+                        result[i].key = i;
+                        if (result[i].status === 1) result[i].status = "Aktiv";
+                        if (result[i].status === 0) result[i].status = "Deaktiv"
+                    }
+                    res.status(200).send(result)
                 }
-                res.status(200).send(result)
             }
-        }
-        )
+            )
 
-    })
+        })
 
-    Router.delete('/users/:id', (req, res) => {
+        .put('/users/:id', (req, res) => {
 
-        const userId = req.params.id
+            const userId = req.params.id
 
-        DBconnect.query(
-            `
+            DBconnect.query(
+                `
+                UPDATE users
+                SET user_status = true
+                WHERE id = ${userId}
+            `, (error, result) => {
+
+                if (error) res.status(500).send()
+                if (result) res.status(200).json({ message: messages.activatedUser })
+
+            }
+            )
+        })
+
+        .delete('/users/:id', (req, res) => {
+
+            const userId = req.params.id
+
+            DBconnect.query(
+                `
                 UPDATE users
                 SET user_status = false
                 WHERE id = ${userId}
             `, (error, result) => {
 
-            if (error) res.status(500).send()
-            if (result) res.status(200).json({ message: messages.deactivatedUser })
+                if (error) res.status(500).send()
+                if (result) res.status(200).json({ message: messages.deactivatedUser })
 
-        }
-        )
-    })
+            }
+            )
+        })
 
     return Router;
 

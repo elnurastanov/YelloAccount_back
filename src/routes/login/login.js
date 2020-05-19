@@ -11,7 +11,7 @@ const route = () => {
 
     router.post('/login', (req, res) => {
 
-        let credential = req.body
+        const credential = req.body
 
         DBconnect.query(
             `
@@ -33,10 +33,9 @@ const route = () => {
             `, (error, result) => {
 
             if (error) res.status(500).send()
+            if (!result[0].id) res.status(404).json({ "error": messages.userNotFound })
+            if (result[0].id) {
 
-            if (result.length === 0) res.status(404).json({ "error": messages.userNotFound })
-
-            else {
                 let user = {
                     id: result[0].id,
                     username: result[0].username,
@@ -45,20 +44,25 @@ const route = () => {
                     role: result[0].role
                 }
 
+                
                 bcrypt.compare(credential.password, user.password, (err, check) => {
 
-                    if (check) {
+                    if (err) res.status(401).json({ "error": messages.inCorrectPassword })
 
+                    if (check) {
+                        console.log('test')
                         const token = jwt.sign({
                             id: user.id,
                             username: user.username,
                             role: user.role
                         }, config.key);
 
-                        res.status(200).json({ "token": token, "staff":  user.staff});
+                        res.status(200).json({ "token": token, "staff": user.staff });
 
-                    } else return res.status(401).json({ "error": messages.inCorrectPassword })
+                    }
+
                 })
+
             }
         })
     })

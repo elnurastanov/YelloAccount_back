@@ -5,5 +5,7 @@ export default {
     inCorrectPassword: 'Daxil etdiyiniz şifrə yalnışdır',
     alreadyExistUser: "Əməkdaş artıq qeydiyyatdan keçmişdir və ya istifadəçi adı mövcuddur",
     modifyUserRoleSuccess: "İstifadəçinin rolu uğurla yeniləndi",
-    deactivatedUser: "İstifadəçi deaktiv edildi"
+    deactivatedUser: "İstifadəçi deaktiv edildi",
+    activatedUser : "İstifadəçi aktiv edildi",
+    changedUserPassword: "Istifadəçinin şifrəsi yeniləndi"
 }

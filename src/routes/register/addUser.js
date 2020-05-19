@@ -12,7 +12,10 @@ const route = () => {
 
         bcrypt.hash(req.body.password, 10, function (error, hash) {
             if (error) {
-                console.log(`Hashing password Error => ${error}`)
+
+                console.log(`Hashing password Error => ${error}`);
+                res.status(500).send()
+
             } else {
                 DBconnect.query(
                     `
