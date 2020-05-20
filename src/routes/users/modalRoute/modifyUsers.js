@@ -92,7 +92,7 @@ const route = () => {
             }
             try {
 
-                await DBconnect.query(
+                await DBconnect.promise().query(
                     `
                         UPDATE users_roles
                         JOIN (
@@ -123,7 +123,7 @@ const route = () => {
                     for (let j = 0; j < query.length; j++) {
 
 
-                        await DBconnect.query(query[j]);
+                        await DBconnect.promise().query(query[j]);
 
                     }
                     res.status(200).json({ message: messages.modifyUserRoleSuccess });

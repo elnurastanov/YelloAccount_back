@@ -9,62 +9,101 @@ const route = () => {
 
     const router = new express.Router()
 
-    router.post('/login', (req, res) => {
+    router.post('/login', async (req, res) => {
 
         const credential = req.body
 
-        DBconnect.query(
-            `
-                SELECT 
-                users.id AS id,
-                users.username AS username,
-                users.pswd AS password,
-                GROUP_CONCAT( roles.name SEPARATOR ',') AS role,
-                CONCAT(staff.first_name, " ", staff.last_name) AS staff
-                FROM users
-                INNER JOIN users_roles
-                INNER JOIN roles
-                INNER JOIN staff
-                ON username="${credential.username}"
-                AND users_roles.user=users.id
-                AND users_roles.role=roles.id
-                AND users.staff_id=staff.id
-                AND users_roles.role_status=true
-            `, (error, result) => {
+        try {
 
-            if (error) res.status(500).send()
-            if (!result[0].id) res.status(404).json({ "error": messages.userNotFound })
-            if (result[0].id) {
+            const rows = await DBconnect.promise().query(
+                `
+                    SELECT 
+                    users.id AS id,
+                    users.username AS username,
+                    users.pswd AS password,
+                    GROUP_CONCAT( roles.name SEPARATOR ',') AS role,
+                    CONCAT(staff.first_name, " ", staff.last_name) AS staff
+                    FROM users
+                    INNER JOIN users_roles
+                    INNER JOIN roles
+                    INNER JOIN staff
+                    ON username="${credential.username}"
+                    AND users_roles.user=users.id
+                    AND users_roles.role=roles.id
+                    AND users.staff_id=staff.id
+                    AND users_roles.role_status=true
+                `);
 
-                let user = {
-                    id: result[0].id,
-                    username: result[0].username,
-                    password: result[0].password,
-                    staff: result[0].staff,
-                    role: result[0].role
-                }
+            let user = {}
+            await rows[0].map(data => {
+                user.id = data.id,
+                    user.username = data.username,
+                    user.password = data.password,
+                    user.role = data.role,
+                    user.staff = data.staff
+            })
+            
+            if (user.id !== null) {
 
-                
-                bcrypt.compare(credential.password, user.password, (err, check) => {
+                try {
 
-                    if (err) res.status(401).json({ "error": messages.inCorrectPassword })
+                    const result = await bcrypt.compare(credential.password, user.password)
+                    if (result) {
 
-                    if (check) {
-                        console.log('test')
                         const token = jwt.sign({
                             id: user.id,
                             username: user.username,
                             role: user.role
                         }, config.key);
 
-                        res.status(200).json({ "token": token, "staff": user.staff });
+                        res.status(200).json({ "token": token, "staff": user.staff, "role": user.role });
 
-                    }
+                    } else res.status(401).json({ "error": messages.inCorrectPassword })
 
-                })
 
-            }
-        })
+                } catch (error) {
+
+                    res.status(500).send();
+                    console.log(`Bcrypt compare Error => ${error}`)
+
+                }
+
+            } else res.status(404).json({ "error": messages.userNotFound })
+
+
+
+        } catch (error) {
+
+            res.status(500).send();
+            console.log(`Login Error => ${error}`)
+
+        }
+
+
+
+
+        // if (!result[0].id) 
+        // if (result[0].id) {
+
+        //     
+
+
+        //     bcrypt.compare(credential.password, user.password, (err, check) => {
+
+        //         if (err) 
+
+        //         if (check) {
+        //             console.log('test')
+        //             
+
+        //             
+
+        //         }
+
+        //     })
+
+        // }
+
     })
 
     return router;
