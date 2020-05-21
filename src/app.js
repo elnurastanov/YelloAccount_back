@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import AppRoutes from './routes/index';
 import config from './config'
-
 const port = config.port
 const app = express()
 

@@ -3,6 +3,7 @@ import config from '../../config'
 import DBconnect from '../../database/dbconnection'
 import messages from '../messages'
 
+
 const route = () => {
 
     const Router = new express.Router()
@@ -10,6 +11,7 @@ const route = () => {
     Router
         .get('/users', (req, res) => {
 
+            
             DBconnect.query(
                 `
                 SELECT

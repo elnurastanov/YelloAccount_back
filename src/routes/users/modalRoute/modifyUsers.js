@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import config from '../../../config'
 import DBconnect from '../../../database/dbconnection'
 import messages from '../../messages'
+import AuthServices from '../../auth/authServices'
 
 const route = () => {
 
@@ -90,57 +91,74 @@ const route = () => {
                 if (req.body.role[i] === "Customer Services") roles.push(5)
                 if (req.body.role[i] === "Employee") roles.push(6)
             }
-            try {
 
-                await DBconnect.promise().query(
-                    `
-                        UPDATE users_roles
-                        JOIN (
-                            SELECT 1 as id, false as new_score2
-                            UNION ALL
-                            SELECT 2, false
-                            UNION ALL
-                            SELECT 3, false
-                            UNION ALL
-                            SELECT 4, false
-                            UNION ALL
-                            SELECT 5, false
-                            UNION ALL
-                            SELECT 6, true
-                        ) vals ON user = ${req.body.id} AND role=vals.id
-                        SET role_status = new_score2;
-                    `);
+            if (!req.headers.authorization) res.status(400).json({ message: "Token not provided" })
+            if(req.headers.authorization){
 
-                let query = roles.map(val => {
-
-                    return `UPDATE users_roles SET role_status = true WHERE user = ${req.body.id} AND role=${val}`
-
+                let tkk = await AuthServices({
+                    token: req.headers.authorization
                 })
-
-
-                try {
-
-                    for (let j = 0; j < query.length; j++) {
-
-
-                        await DBconnect.promise().query(query[j]);
-
+                console.log(tkk)
+                if (tkk) {
+    
+                    try {
+    
+    
+                        await DBconnect.promise().query(
+                            `
+                                UPDATE users_roles
+                                JOIN (
+                                    SELECT 1 as id, false as new_score2
+                                    UNION ALL
+                                    SELECT 2, false
+                                    UNION ALL
+                                    SELECT 3, false
+                                    UNION ALL
+                                    SELECT 4, false
+                                    UNION ALL
+                                    SELECT 5, false
+                                    UNION ALL
+                                    SELECT 6, true
+                                ) vals ON user = ${req.body.id} AND role=vals.id
+                                SET role_status = new_score2;
+                            `);
+    
+                        let query = roles.map(val => {
+    
+                            return `UPDATE users_roles SET role_status = true WHERE user = ${req.body.id} AND role=${val}`
+    
+                        })
+    
+    
+                        try {
+    
+                            for (let j = 0; j < query.length; j++) {
+    
+    
+                                await DBconnect.promise().query(query[j]);
+    
+                            }
+                            res.status(200).json({ message: messages.modifyUserRoleSuccess });
+    
+                        } catch (error) {
+    
+                            res.status(500).send();
+                            console.log(`Updating Users Roles Error => ${error}`)
+    
+                        }
+    
+                    } catch (error) {
+    
+                        res.status(500).send();
+                        console.log(`Resetting Users Roles Error => ${error}`)
+    
                     }
-                    res.status(200).json({ message: messages.modifyUserRoleSuccess });
-
-                } catch (error) {
-
-                    res.status(500).send();
-                    console.log(`Updating Users Roles Error => ${error}`)
-
+    
                 }
-
-            } catch (error) {
-
-                res.status(500).send();
-                console.log(`Resetting Users Roles Error => ${error}`)
+                else res.status(403).json({ message: messages.userNotPermission })
 
             }
+            
 
 
 

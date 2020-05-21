@@ -79,31 +79,6 @@ const route = () => {
 
         }
 
-
-
-
-        // if (!result[0].id) 
-        // if (result[0].id) {
-
-        //     
-
-
-        //     bcrypt.compare(credential.password, user.password, (err, check) => {
-
-        //         if (err) 
-
-        //         if (check) {
-        //             console.log('test')
-        //             
-
-        //             
-
-        //         }
-
-        //     })
-
-        // }
-
     })
 
     return router;

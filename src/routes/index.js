@@ -2,6 +2,7 @@ import Register from './register/addUser'
 import Login from './login/login'
 import Users from './users/users'
 import UsersModal from './users/modalRoute/modifyUsers'
+import PanelAuth from './auth/authPanel'
 import OrganizationCompany from './organization/company'
 import OrganizationCompanyModal from './organization/modalRoute/companyModal'
 import OrganizationDepartment from './organization/department'
@@ -21,6 +22,7 @@ const AppRoutes = (app) => {
     app.use(Login.routePrefix, Login.route()),
     app.use(Users.routePrefix, Users.route()),
     app.use(UsersModal.routePrefix, UsersModal.route()),
+    app.use(PanelAuth.routeprefix, PanelAuth.route()),
     app.use(OrganizationCompany.routePrefix, OrganizationCompany.route()),
     app.use(OrganizationCompanyModal.routePrefix, OrganizationCompanyModal.route()),
     app.use(OrganizationDepartment.routePrefix, OrganizationDepartment.route()),

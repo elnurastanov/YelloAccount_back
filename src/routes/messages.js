@@ -7,5 +7,6 @@ export default {
     modifyUserRoleSuccess: "İstifadəçinin rolu uğurla yeniləndi",
     deactivatedUser: "İstifadəçi deaktiv edildi",
     activatedUser : "İstifadəçi aktiv edildi",
-    changedUserPassword: "Istifadəçinin şifrəsi yeniləndi"
+    changedUserPassword: "Istifadəçinin şifrəsi yeniləndi",
+    userNotPermission: "You do not have permission to access this service"
 }
