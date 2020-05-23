@@ -4,10 +4,10 @@ import DBconnect from '../../database/dbconnection'
 
 const route = () => {
 
-    const router = new express.Router();
+    const Router = new express.Router();
 
-    router.route('/organization/company')
-        .get((req, res) => {
+    Router
+        .get('/organization/company', (req, res) => {
 
             DBconnect.query(
                 `SELECT id, name, direction FROM company`,
@@ -23,7 +23,7 @@ const route = () => {
 
         })
 
-    return router;
+    return Router;
 }
 
 export default {

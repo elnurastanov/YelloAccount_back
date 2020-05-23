@@ -7,7 +7,8 @@ const route = () => {
 
     const router = new express.Router();
 
-    router.get('/staff/modal/:id', (req, res) => {
+    router
+    .get('/staff/modal/:id', (req, res) => {
         DBconnect.query(
             `
             SELECT
@@ -60,7 +61,7 @@ const route = () => {
         )
     })
 
-    router.post('/staff', (req, res) => {
+    .post('/staff', (req, res) => {
         DBconnect.query(
             `
             INSERT INTO staff

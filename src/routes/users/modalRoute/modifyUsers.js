@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import config from '../../../config'
 import DBconnect from '../../../database/dbconnection'
 import messages from '../../messages'
-import AuthServices from '../../auth/authServices'
+import Authorization from '../../middleware/authorization'
 
 const route = () => {
 
@@ -92,10 +92,10 @@ const route = () => {
                 if (req.body.role[i] === "Employee") roles.push(6)
             }
 
-            if (!req.headers.authorization) res.status(400).json({ message: "Token not provided" })
+            
             if(req.headers.authorization){
 
-                let tkk = await AuthServices({
+                let tkk = await Authorization({
                     token: req.headers.authorization
                 })
                 console.log(tkk)

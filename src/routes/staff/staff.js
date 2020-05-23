@@ -4,11 +4,12 @@ import DBconnect from '../../database/dbconnection'
 
 const route = () => {
 
-    const router = new express.Router();
+    const Router = new express.Router();
 
-    router.get('/staff', (req, res) => {
-        DBconnect.query(
-            `
+    Router
+        .get('/staff', (req, res) => {
+            DBconnect.query(
+                `
             SELECT
             staff.id AS id,
             CONCAT(staff.first_name, " ", staff.last_name, " ", staff.patronymic) AS fullName,
@@ -23,19 +24,19 @@ const route = () => {
             AND department.company_id=company.id
             AND staff.status=true
             `, (error, result) => {
-            if (error) {
-                console.log('getStaff Error => ', error);
-                res.status(404).send();
-            } else {
-                res.status(200).send(result);
+                if (error) {
+                    console.log('getStaff Error => ', error);
+                    res.status(404).send();
+                } else {
+                    res.status(200).send(result);
+                }
             }
-        }
-        )
-    })
+            )
+        })
 
-    router.put('/staff/modal/:id', (req, res) => {
-        DBconnect.query(
-            `
+        .put('/staff/modal/:id', (req, res) => {
+            DBconnect.query(
+                `
             UPDATE staff
             SET
             position_id=${req.body.position_id},
@@ -56,34 +57,34 @@ const route = () => {
             WHERE id=${req.params.id}
             AND staff.status=true
             `, (error, result) => {
-            if (error) {
-                console.log('editStaff Error => ', error);
-                res.status(404).send();
-            } else {
-                res.status(200).send();
+                if (error) {
+                    console.log('editStaff Error => ', error);
+                    res.status(404).send();
+                } else {
+                    res.status(200).send();
+                }
             }
-        }
-        )
+            )
 
-        router.delete('/staff/modal/:id', (req, res) => {
-            DBconnect.query(
-                `
+                .delete('/staff/modal/:id', (req, res) => {
+                    DBconnect.query(
+                        `
                 UPDATE staff
                 SET status=false
                 WHERE id=${req.params.id}
                 `, (error, result) => {
-                    if (error) {
-                        console.log('deleteStaff Error => ', error);
-                        res.status(404).send();
-                    } else {
-                        res.status(200).send();
+                        if (error) {
+                            console.log('deleteStaff Error => ', error);
+                            res.status(404).send();
+                        } else {
+                            res.status(200).send();
+                        }
                     }
-                }
-            )
+                    )
+                })
         })
-    })
 
-    return router;
+    return Router;
 
 }
 
