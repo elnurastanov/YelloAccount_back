@@ -7,19 +7,26 @@ const route = () => {
     const Router = new express.Router();
 
     Router
-        .get('/organization/company', (req, res) => {
+        .get('/organization/company', async (req, res) => {
 
-            DBconnect.query(
-                `SELECT id, name, direction FROM company`,
-                (error, result) => {
-                    if (error) {
-                        console.log('getCompany Error => ', error);
-                        res.status(404).send()
-                    } else {
-                        res.status(200).send(result)
-                    }
-                }
-            )
+            try {
+
+                const result = await DBconnect.promise().query(
+                    `
+                        SELECT id, name, direction 
+                        FROM company
+                        WHERE status = true
+                    `
+                )
+
+                res.status(200).send(result[0])
+                
+            } catch (error) {
+                
+                console.log('getCompany Error => ', error);
+                res.status(500).send()
+
+            }
 
         })
 

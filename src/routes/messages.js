@@ -8,5 +8,6 @@ export default {
     deactivatedUser: "İstifadəçi deaktiv edildi",
     activatedUser : "İstifadəçi aktiv edildi",
     changedUserPassword: "Istifadəçinin şifrəsi yeniləndi",
-    userNotPermission: "You do not have permission to access this service"
+    userNotPermission: "You do not have permission to access this service",
+    panelNotPermission: "You do not have permission to access this panel"
 }

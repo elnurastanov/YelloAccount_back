@@ -1,6 +1,7 @@
 import express from 'express'
 import config from '../../config'
 import panelRoles from '../servicesRoles'
+import messages from '../messages'
 
 
 
@@ -20,10 +21,11 @@ const route = () => {
                 let result = await panelRoles[panel].map(data => role.includes(data))
                 
                 if (checker(result)) res.status(200).send()
-                else res.status(403).send()
+                else res.status(403).json({message: messages.panelNotPermission})
 
             } catch (error) {
 
+                console.log(`Panel Auth Error => ${error}`)
                 res.status(500).send()
 
             }

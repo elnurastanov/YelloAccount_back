@@ -4,6 +4,7 @@ import cors from 'cors';
 import AppRoutes from './routes/index';
 import config from './config'
 import Authenticated from './routes/middleware/authenticated'
+import Authorization from './routes/middleware/authorization'
 const port = config.port
 const app = express()
 
@@ -16,6 +17,8 @@ app.use(`/${config.version}/panel/organization`, Authenticated)
 app.use(`/${config.version}/panel/staff`, Authenticated)
 app.use(`/${config.version}/panel/users`, Authenticated)
 app.use(`/${config.version}/panel/organization`, Authenticated)
+
+app.use(`/${config.version}/panel/:panel`, Authorization)
 
 
 AppRoutes(app);

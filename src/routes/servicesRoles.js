@@ -1,65 +1,65 @@
 const panelRoles = {
-    Dashboard: [
+    dashboard: [
         "Employee"
     ],
-    Organization: [
+    organization: [
         "Super Admin",
         "Adminstrator"
     ],
-    Bank: [
+    bank: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    Treasure: [
+    treasure: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    Buy: [
+    buy: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    Sale: [
+    sale: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    ADV: [
+    aDV: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    QMA: [
+    qMA: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    Salary: [
+    salary: [
         "Super Admin",
         "Adminstrator",
         "Accountant"
     ],
-    Staff: [
+    staff: [
         "Super Admin",
         "Adminstrator",
         "Human Resources"
     ],
-    Contact: [
+    contact: [
         "Super Admin",
         "Adminstrator",
         "Customer Services"
     ],
-    Monitor: [
+    monitor: [
         "Super Admin",
         "Adminstrator"
     ],
-    Leader: [
+    leader: [
         "Super Admin",
         "Adminstrator"
     ],
-    Users: [
+    users: [
         "Super Admin"
     ]
 
