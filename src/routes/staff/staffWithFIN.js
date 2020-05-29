@@ -4,41 +4,50 @@ import DBconnect from '../../database/dbconnection'
 
 const route = () => {
 
-    const router = new express.Router();
+    const Router = new express.Router();
 
-    router.get('/staff/:id', (req, res) => {
-        DBconnect.query(
-            `
-            SELECT
-            id,
-            first_name,
-            last_name,
-            patronymic
-            FROM staff
-            WHERE id_FIN="${req.params.id}"
-            AND status=true
-            `, (error, result) => {
-            if (error) {
-                console.log('getStaffWithFIN Error => ', error);
-                res.status(404).send();
-            } else {
-                const data= {
-                    id: result[0].id,
-                    first_name: result[0].first_name,
-                    last_name: result[0].last_name,
-                    patronymic: result[0].patronymic
+    Router
+        .get('/register/:id', async (req, res) => {
+
+            try {
+
+                const result = await DBconnect.promise().query(
+                    `
+                    SELECT
+                    id,
+                    first_name,
+                    last_name,
+                    patronymic
+                    FROM staff
+                    WHERE id_FIN="${req.params.id}"
+                    AND status=true
+                `
+                )
+
+                const staffdata = result[0]
+
+                const data = {
+                    id: staffdata[0].id,
+                    first_name: staffdata[0].first_name,
+                    last_name: staffdata[0].last_name,
+                    patronymic: staffdata[0].patronymic
                 }
-                res.status(200).send(data);
-            }
-        }
-        )
-    })
 
-    return router;
+                res.status(200).send(data);
+
+            } catch (error) {
+
+                console.log('getStaffWithFIN Error => ', error);
+                res.status(500).send();
+
+            }
+        })
+
+    return Router;
 
 }
 
 export default {
     route,
-    routePrefix: `/${config.version}/panel`
+    routePrefix: `/${config.version}`
 }

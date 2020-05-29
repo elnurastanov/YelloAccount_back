@@ -7,16 +7,17 @@ import jwt from 'jsonwebtoken'
 
 const route = () => {
 
-    const router = new express.Router()
+    const Router = new express.Router()
 
-    router.post('/login', async (req, res) => {
+    Router
+        .post('/login', async (req, res) => {
 
-        const credential = req.body
+            const credential = req.body
 
-        try {
+            try {
 
-            const rows = await DBconnect.promise().query(
-                `
+                const rows = await DBconnect.promise().query(
+                    `
                     SELECT 
                     users.id AS id,
                     users.username AS username,
@@ -34,58 +35,58 @@ const route = () => {
                     AND users_roles.role_status=true
                 `);
 
-            let user = {}
-            await rows[0].map(data => {
-                user.id = data.id,
-                    user.username = data.username,
-                    user.password = data.password,
-                    user.role = data.role,
-                    user.staff = data.staff
-            })
-            
-            if (user.id !== null) {
+                let user = {}
+                await rows[0].map(data => {
+                    user.id = data.id,
+                        user.username = data.username,
+                        user.password = data.password,
+                        user.role = data.role,
+                        user.staff = data.staff
+                })
 
-                try {
+                if (user.id !== null) {
 
-                    const result = await bcrypt.compare(credential.password, user.password)
-                    if (result) {
+                    try {
 
-                        const token = jwt.sign({
-                            id: user.id,
-                            username: user.username,
-                            role: user.role
-                        }, config.key);
+                        const result = await bcrypt.compare(credential.password, user.password)
+                        if (result) {
 
-                        res.status(200).json({ "token": token, "staff": user.staff, "role": user.role });
+                            const token = jwt.sign({
+                                id: user.id,
+                                username: user.username,
+                                role: user.role
+                            }, config.key);
 
-                    } else res.status(401).json({ "error": messages.inCorrectPassword })
+                            res.status(200).json({ "token": token, "staff": user.staff, "role": user.role });
 
-
-                } catch (error) {
-
-                    res.status(500).send();
-                    console.log(`Bcrypt compare Error => ${error}`)
-
-                }
-
-            } else res.status(404).json({ "error": messages.userNotFound })
+                        } else res.status(401).json({ "message": messages.inCorrectPassword })
 
 
+                    } catch (error) {
 
-        } catch (error) {
+                        res.status(500).send();
+                        console.log(`Bcrypt compare Error => ${error}`)
 
-            res.status(500).send();
-            console.log(`Login Error => ${error}`)
+                    }
 
-        }
+                } else res.status(404).json({ "message": messages.userNotFound })
 
-    })
 
-    return router;
+
+            } catch (error) {
+
+                res.status(500).send();
+                console.log(`Login Error => ${error}`)
+
+            }
+
+        })
+
+    return Router;
 
 }
 
 export default {
     route,
-    routePrefix: `/${config.version}/panel`
+    routePrefix: `/${config.version}`
 }

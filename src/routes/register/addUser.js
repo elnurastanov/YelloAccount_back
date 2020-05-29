@@ -6,19 +6,20 @@ import bcrypt from 'bcrypt'
 
 const route = () => {
 
-    const router = new express.Router()
+    const Router = new express.Router()
 
-    router.post('/register', (req, res) => {
+    Router
+        .post('/register', (req, res) => {
 
-        bcrypt.hash(req.body.password, 10, function (error, hash) {
-            if (error) {
+            bcrypt.hash(req.body.password, 10, function (error, hash) {
+                if (error) {
 
-                console.log(`Hashing password Error => ${error}`);
-                res.status(500).send()
+                    console.log(`Hashing password Error => ${error}`);
+                    res.status(500).send()
 
-            } else {
-                DBconnect.query(
-                    `
+                } else {
+                    DBconnect.query(
+                        `
                     INSERT INTO users
                     (staff_id, username, pswd, user_status)
                     VALUES
@@ -29,13 +30,13 @@ const route = () => {
                         true
                     )
                     `, (error, result) => {
-                    if (error) {
+                        if (error) {
 
-                        console.log(`addUser Error => ${error}`);
-                        res.status(400).json({ "error": messages.alreadyExistUser })
+                            console.log(`addUser Error => ${error}`);
+                            res.status(400).json({ "error": messages.alreadyExistUser })
 
-                    } else DBconnect.query(
-                        `
+                        } else DBconnect.query(
+                            `
                             INSERT INTO users_roles
                             (user, role, role_status)
                             VALUES
@@ -46,28 +47,28 @@ const route = () => {
                             (${result.insertId}, 5, false),
                             (${result.insertId}, 6, true)
                         `, (err, success) => {
-                        if (err) {
+                            if (err) {
 
-                            res.status(500).send();
-                            console.log(`addUserRole Error => ${err}`);
+                                res.status(500).send();
+                                console.log(`addUserRole Error => ${err}`);
 
-                        } else res.status(201).send();
+                            } else res.status(201).send();
+
+                        }
+                        )
 
                     }
                     )
-
                 }
-                )
-            }
-        });
+            });
 
-    })
+        })
 
-    return router;
+    return Router;
 
 }
 
 export default {
     route,
-    routePrefix: `/${config.version}/panel`
+    routePrefix: `/${config.version}`
 }

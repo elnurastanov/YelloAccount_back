@@ -36,5 +36,5 @@ const route = () => {
 
 export default {
     route,
-    routeprefix: `/${config.version}/panel`
+    routeprefix: `/${config.version}`
 }

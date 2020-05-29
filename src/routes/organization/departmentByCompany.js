@@ -4,27 +4,33 @@ import DBconnect from '../../database/dbconnection'
 
 const route = () => {
 
-    const router = new express.Router();
+    const Router = new express.Router();
 
-    router.get('/organization/department/:id', (req, res) => {
-        DBconnect.query(
-            `
-            SELECT id, name
-            FROM department
-            WHERE company_id=${req.params.id}
-            `,
-            (error, result) => {
-                if (error) {
-                    console.log('getDepartmentWithCompanyID Error => ', error);
-                    res.status(404).send()
-                } else {
-                    res.status(200).send(result)
-                }
+    Router
+        .get('/organization/department/:id', async (req, res) => {
+
+            try {
+
+                const result = await DBconnect.promise().query(
+                    `
+                        SELECT id, name
+                        FROM department
+                        WHERE company_id=${req.params.id}
+                        AND department_status = true
+                    `
+                )
+
+                res.status(200).send(result[0])
+                
+            } catch (error) {
+
+                console.log('getDepartmentWithCompanyID Error => ', error);
+                res.status(500).send()
+                
             }
-        )
-    })
+        })
 
-    return router;
+    return Router;
 }
 
 export default {
